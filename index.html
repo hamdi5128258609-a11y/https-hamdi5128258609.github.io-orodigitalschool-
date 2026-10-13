@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oro Digital School</title>
+<style>
+:root{--bg:#f7faf7;--card:#fff;--text:#18261c;--muted:#5b6b5f;--brand:#1b7f3b;--border:#dbe5dc;--err:#c0392b}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1a13;--card:#16241b;--text:#e8f1ea;--muted:#9bb0a0;--brand:#3cc267;--border:#27382c;--err:#ff7b6b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+header{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);z-index:5}
+.wrap{max-width:900px;margin:0 auto;padding:0 14px}
+nav{display:flex;align-items:center;justify-content:space-between;height:56px;gap:8px}
+.logo{font-weight:800;color:var(--brand)}
+.hide{display:none!important}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin:14px 0}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:10px 16px;font-size:.95rem;font-weight:600;cursor:pointer}
+.btn:disabled{opacity:.6;cursor:wait}
+.btn.alt{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+.btn.del{background:var(--err);color:#fff}
+.btn.sm{padding:6px 11px;font-size:.85rem}
+.tabs{display:flex;gap:6px;margin-bottom:8px}
+.tabs button{flex:1}
+label{display:block;font-weight:600;margin:10px 0 4px;font-size:.9rem}
+input,select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:1rem}
+.err{color:var(--err);font-size:.82rem;min-height:1em}
+.msg{margin-top:10px;padding:10px;border-radius:8px;font-weight:600;display:none}
+.msg.ok{display:block;background:rgba(27,127,59,.15);color:var(--brand)}
+.msg.bad{display:block;background:rgba(192,57,43,.15);color:var(--err)}
+.ov{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:22px 12px;text-align:center;color:var(--muted);cursor:pointer;margin-top:4px}
+.drop.over{border-color:var(--brand);color:var(--brand)}
+.drop b{color:var(--text);display:block;word-break:break-all}
+progress{width:100%;height:14px;margin-top:10px}
+details{background:var(--card);border:1px solid var(--border);border-radius:14px;margin:12px 0;padding:4px 14px}
+summary{font-weight:700;font-size:1.05rem;padding:10px 0;cursor:pointer;color:var(--brand)}
+.vid{border-top:1px solid var(--border);padding:12px 0}
+.vid h4{margin:0 0 2px}
+.meta{color:var(--muted);font-size:.82rem;margin-bottom:8px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+video{width:100%;max-height:60vh;border-radius:8px;background:#000;margin-top:8px}
+.empty{color:var(--muted);padding:8px 0 12px;font-size:.9rem}
+</style>
+</head>
+<body>
+<header><div class="wrap"><nav>
+<span class="logo">📚 Oro Digital School</span>
+<span><span id="who" class="meta" style="margin-right:8px"></span><a href="offline.html" class="btn alt sm" id="offLink" style="text-decoration:none;margin-right:6px">📥 Offline</a><button id="outBtn" class="btn alt sm hide">Log out</button></span>
+</nav></div></header>
+
+<main class="wrap">
+<div id="boot" class="card">Loading… <a href="offline.html" style="color:var(--brand)">No internet? Watch saved videos</a></div>
+
+<section id="auth" class="card hide">
+<div class="tabs">
+<button class="btn" data-tab="login">Log In</button>
+<button class="btn alt" data-tab="register">Student Register</button>
+<button class="btn alt" data-tab="owner">Owner Setup</button>
+</div>
+
+<form id="login" data-pane novalidate>
+<label for="le">Email</label><input id="le" type="email" autocomplete="email">
+<label for="lw">Password</label><input id="lw" type="password" autocomplete="current-password">
+<button class="btn" style="margin-top:12px;width:100%">Log In</button>
+<p class="meta" style="margin:10px 0 0"><a href="#" id="forgot" style="color:var(--brand)">Forgot password?</a></p><div class="msg"></div>
+</form>
+
+<form id="register" data-pane class="hide" novalidate>
+<label for="rn">Full Name</label><input id="rn" autocomplete="name"><div class="err" data-f="rn"></div>
+<label for="re">Email</label><input id="re" type="email" autocomplete="email"><div class="err" data-f="re"></div>
+<label for="rp">Phone Number</label><input id="rp" type="tel" placeholder="09XXXXXXXX"><div class="err" data-f="rp"></div>
+<label for="rg">Grade</label><select id="rg"><option value="">Select grade</option><option>9</option><option>10</option><option>11</option><option>12</option></select><div class="err" data-f="rg"></div>
+<label for="rw">Password</label><input id="rw" type="password" autocomplete="new-password" placeholder="At least 6 characters"><div class="err" data-f="rw"></div>
+<label for="rw2">Confirm Password</label><input id="rw2" type="password" autocomplete="new-password"><div class="err" data-f="rw2"></div>
+<button class="btn" style="margin-top:12px;width:100%">Create Student Account</button><div class="msg"></div>
+</form>
+
+<form id="owner" data-pane class="hide" novalidate>
+<p class="meta"><b>One-time owner setup.</b> Only the owner email set in this site's configuration can create the owner account. A verification email will be sent; the owner area opens after you verify it.</p>
+<label for="oe">Owner Email</label><input id="oe" type="email" autocomplete="email"><div class="err" data-f="oe"></div>
+<label for="op">Password</label><input id="op" type="password" autocomplete="new-password" placeholder="At least 8 characters"><div class="err" data-f="op"></div>
+<label for="op2">Confirm Password</label><input id="op2" type="password" autocomplete="new-password"><div class="err" data-f="op2"></div>
+<button class="btn" style="margin-top:12px;width:100%">Create Owner Account</button><div class="msg"></div>
+</form>
+</section>
+
+<section id="verify" class="card hide">
+<p><b>Please verify your owner email.</b> We sent a link to your inbox. After clicking it, reload this page.</p>
+<button class="btn alt sm" id="resend">Resend email</button> <div class="msg" id="verMsg"></div>
+</section>
+
+<section id="upload" class="card hide">
+<h3 style="margin-top:0">Upload Video (Owner only)</h3>
+<form id="upForm" novalidate>
+<div class="row"><div style="flex:1;min-width:120px"><label for="ug">Grade</label><select id="ug"><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
+<div style="flex:2;min-width:160px"><label for="us">Subject</label><select id="us"><option>English</option><option>Physics</option><option>Chemistry</option><option>Mathematics</option></select></div></div>
+<label for="ut">Video Title</label><input id="ut">
+<label>Video File</label>
+<div class="drop" id="drop" style="position:relative"><span id="dropTxt">📁 Tap here to choose a video from your phone (gallery or files)</span><input id="uf" type="file" accept="video/*" class="ov"></div>
+<div class="btn alt sm" style="position:relative;display:inline-block;margin-top:8px;overflow:hidden">🎥 Record with camera<input id="uc" type="file" accept="video/*" capture="environment" class="ov"></div>
+<p class="meta" style="margin:8px 0 0">Keep this page open until the upload finishes.</p>
+<progress id="prog" value="0" max="100" class="hide"></progress>
+<button class="btn" id="upBtn" style="margin-top:12px">Upload Video</button><div class="msg" id="upMsg"></div>
+</form>
+</section>
+
+<section id="lib" class="hide"></section>
+</main>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,sendEmailVerification,sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {getFirestore,doc,setDoc,getDoc,collection,addDoc,deleteDoc,getDocs} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {getStorage,ref,uploadBytesResumable,getDownloadURL,deleteObject} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+
+/* ================= CONFIGURE THESE ================= */
+const OWNER_EMAIL = "owner@example.com";           // the ONE owner email (lowercase). Also put it in firebase-rules.txt
+const firebaseConfig = {                            // Firebase console > Project settings > Your apps > Web app
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.firebasestorage.app",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+/* =================================================== */
+
+const $=id=>document.getElementById(id);
+const GR=['9','10','11','12'];
+let auth,db,st,profile=null,registering=false,picked=null;
+
+if(firebaseConfig.apiKey==="YOUR_API_KEY"){
+  $('boot').innerHTML='<b>Setup needed:</b> open <code>index.html</code> and paste your Firebase config and owner email in the CONFIGURE THESE block.';
+  throw new Error('Firebase not configured');
+}
+const app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);st=getStorage(app);
+
+function say(form,t,ok){const m=form.querySelector('.msg');m.className='msg '+(ok?'ok':'bad');m.textContent=t;}
+function ferr(k,t){document.querySelector('[data-f="'+k+'"]').textContent=t||'';}
+const mail=e=>/^\S+@\S+\.\S+$/.test(e);
+const isOwnerEmail=e=>(e||'').toLowerCase()===OWNER_EMAIL.toLowerCase();
+function authMsg(e){const c=e.code||'';
+  if(c.includes('email-already-in-use'))return 'This email is already registered.';
+  if(c.includes('invalid-credential')||c.includes('wrong-password')||c.includes('user-not-found'))return 'Incorrect email or password.';
+  if(c.includes('weak-password'))return 'Password is too weak.';
+  if(c.includes('too-many-requests'))return 'Too many attempts. Try again later.';
+  if(c.includes('network'))return 'Network error. Check your internet connection.';
+  return 'Something went wrong. Please try again.';}
+
+function showTab(t){
+  document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('alt',x.dataset.tab!==t));
+  document.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hide',p.id!==t));
+}
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+
+/* student register */
+$('register').onsubmit=async e=>{e.preventDefault();
+  const v={n:$('rn').value.trim(),e:$('re').value.trim().toLowerCase(),p:$('rp').value.trim().replace(/^\+251/,'0'),g:$('rg').value,w:$('rw').value,w2:$('rw2').value};
+  let ok=true;const c=(k,bad,t)=>{ferr(k,bad?t:'');if(bad)ok=false;};
+  c('rn',v.n.length<3,'Enter your full name.');
+  c('re',!mail(v.e)||isOwnerEmail(v.e),'Enter a valid email address.');
+  c('rp',!/^09\d{8}$/.test(v.p),'Enter a valid phone number (09XXXXXXXX).');
+  c('rg',!v.g,'Select your grade.');
+  c('rw',v.w.length<6,'Password must be at least 6 characters.');
+  c('rw2',v.w!==v.w2,'Passwords do not match.');
+  if(!ok)return;
+  registering=true;
+  try{
+    const cr=await createUserWithEmailAndPassword(auth,v.e,v.w);
+    await setDoc(doc(db,'users',cr.user.uid),{name:v.n,phone:v.p,grade:v.g,createdAt:Date.now()});
+    e.target.reset();
+  }catch(err){say(e.target,authMsg(err),false);}
+  registering=false;
+  if(auth.currentUser)await refresh(auth.currentUser);
+};
+
+/* owner one-time setup */
+$('owner').onsubmit=async e=>{e.preventDefault();
+  const em=$('oe').value.trim().toLowerCase(),pw=$('op').value;
+  let ok=true;const c=(k,bad,t)=>{ferr(k,bad?t:'');if(bad)ok=false;};
+  c('oe',!mail(em)||!isOwnerEmail(em),'This email is not the configured owner email.');
+  c('op',pw.length<8,'Password must be at least 8 characters.');
+  c('op2',pw!==$('op2').value,'Passwords do not match.');
+  if(!ok)return;
+  registering=true;
+  try{
+    const cr=await createUserWithEmailAndPassword(auth,em,pw);
+    await sendEmailVerification(cr.user);
+    e.target.reset();
+  }catch(err){say(e.target,authMsg(err),false);}
+  registering=false;
+  if(auth.currentUser)await refresh(auth.currentUser);
+};
+
+/* login (students and owner) */
+$('login').onsubmit=async e=>{e.preventDefault();
+  try{await signInWithEmailAndPassword(auth,$('le').value.trim().toLowerCase(),$('lw').value);e.target.reset();}
+  catch(err){say(e.target,authMsg(err),false);}
+};
+$('forgot').onclick=async ev=>{ev.preventDefault();
+  const em=$('le').value.trim().toLowerCase();
+  if(!mail(em)){say($('login'),'Enter your email above first.',false);return;}
+  try{await sendPasswordResetEmail(auth,em);say($('login'),'Password reset email sent.',true);}catch(err){say($('login'),authMsg(err),false);}
+};
+$('outBtn').onclick=()=>signOut(auth);
+$('resend').onclick=async()=>{try{await sendEmailVerification(auth.currentUser);$('verMsg').className='msg ok';$('verMsg').textContent='Verification email sent.';}catch(e){$('verMsg').className='msg bad';$('verMsg').textContent='Could not send. Try again later.';}};
+
+/* auth state */
+onAuthStateChanged(auth,u=>{if(!registering)refresh(u);});
+
+async function refresh(u){
+  $('boot').classList.add('hide');
+  profile=null;
+  if(!u){render(null);return;}
+  if(navigator.onLine)await u.reload().catch(()=>{});
+  if(isOwnerEmail(u.email)){render({role:'owner',email:u.email,verified:u.emailVerified});return;}
+  if(navigator.onLine){try{const s=await getDoc(doc(db,'users',u.uid));if(s.exists()){profile=s.data();try{localStorage.setItem('ods_p_'+u.uid,JSON.stringify(profile));}catch(e){}}else{await signOut(auth);return;}}catch(e){}}
+  if(!profile){try{profile=JSON.parse(localStorage.getItem('ods_p_'+u.uid));}catch(e){}}
+  if(!profile){render(null);return;}
+  render({role:'student',name:profile.name,grade:profile.grade});
+}
+
+/* file picker + drag and drop */
+const drop=$('drop');
+function pick(f){
+  if(!f)return;
+  if(f.type&&!f.type.startsWith('video/')&&!/\.(mp4|webm|mov|mkv|3gp|avi|m4v)$/i.test(f.name)){say($('upForm'),'Please choose a video file.',false);return;}
+  picked=f;
+  $('dropTxt').innerHTML='<b>'+f.name.replace(/[<>&]/g,'')+'</b>'+(f.size/1048576).toFixed(1)+' MB selected';
+  if(!$('ut').value.trim())$('ut').value=f.name.replace(/\.[^.]+$/,'');
+  $('upMsg').className='msg';
+}
+['change','input'].forEach(n=>{$('uf').addEventListener(n,()=>pick($('uf').files[0]));$('uc').addEventListener(n,()=>pick($('uc').files[0]));});
+['dragenter','dragover'].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.add('over');}));
+['dragleave','drop'].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.remove('over');}));
+drop.addEventListener('drop',e=>pick(e.dataTransfer.files[0]));
+
+/* upload (owner) */
+$('upForm').onsubmit=async e=>{e.preventDefault();
+  const u=auth.currentUser;if(!u||!isOwnerEmail(u.email))return;
+  const t=$('ut').value.trim();
+  if(!t||!picked){say(e.target,'Enter a title and choose a video file.',false);return;}
+  const g=$('ug').value,safe=picked.name.replace(/[^\w.\-]+/g,'_'),path='videos/'+g+'/'+Date.now()+'_'+safe;
+  $('upBtn').disabled=true;$('prog').classList.remove('hide');$('prog').value=0;
+  const task=uploadBytesResumable(ref(st,path),picked,{contentType:picked.type||({mp4:'video/mp4',m4v:'video/mp4',webm:'video/webm',mov:'video/quicktime',mkv:'video/x-matroska','3gp':'video/3gpp',avi:'video/x-msvideo'}[picked.name.split('.').pop().toLowerCase()])||'video/mp4'});
+  task.on('state_changed',s=>{$('prog').value=Math.round(s.bytesTransferred/s.totalBytes*100);},
+    ()=>{$('upBtn').disabled=false;say(e.target,'Upload failed. Check your connection and Firebase rules.',false);},
+    async()=>{
+      try{
+        const url=await getDownloadURL(task.snapshot.ref);
+        await addDoc(collection(db,'videos'),{grade:g,subject:$('us').value,title:t,path,url,size:picked.size,name:picked.name,date:Date.now()});
+        say(e.target,'Video uploaded to Grade '+g+'.',true);
+        $('ut').value='';$('uf').value='';$('uc').value='';picked=null;
+        $('dropTxt').innerHTML='📁 Tap here to choose a video from your phone (gallery or files)';
+        loadLib();
+      }catch(err){say(e.target,'Saved file but could not save details.',false);}
+      $('upBtn').disabled=false;$('prog').classList.add('hide');
+    });
+};
+
+/* offline storage (saved on this phone, plays without internet) */
+function odb(){return new Promise((res,rej)=>{const r=indexedDB.open('ods_offline',1);r.onupgradeneeded=()=>r.result.createObjectStore('videos',{keyPath:'id'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+async function oids(){try{const d=await odb();return await new Promise(res=>{const q=d.transaction('videos').objectStore('videos').getAllKeys();q.onsuccess=()=>res(new Set(q.result));q.onerror=()=>res(new Set());});}catch(e){return new Set();}}
+async function oput(rec){const d=await odb();return new Promise((res,rej)=>{const t=d.transaction('videos','readwrite');t.objectStore('videos').put(rec);t.oncomplete=res;t.onerror=()=>rej(t.error);});}
+async function odel(id){const d=await odb();return new Promise((res,rej)=>{const t=d.transaction('videos','readwrite');t.objectStore('videos').delete(id);t.oncomplete=res;t.onerror=()=>rej(t.error);});}
+async function saveOffline(v,btn){
+  try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
+  btn.disabled=true;btn.textContent='Saving 0%';
+  try{
+    const resp=await fetch(v.url);if(!resp.ok)throw new Error('http');
+    const len=+resp.headers.get('content-length')||v.size,rd=resp.body.getReader(),parts=[];let got=0;
+    for(;;){const {done,value}=await rd.read();if(done)break;parts.push(value);got+=value.length;btn.textContent='Saving '+Math.min(99,Math.round(got/len*100))+'%';}
+    const blob=new Blob(parts,{type:resp.headers.get('content-type')||'video/mp4'});
+    await oput({id:v.id,grade:v.grade,subject:v.subject,title:v.title,date:v.date,blob});
+    btn.textContent='✓ Saved offline';btn.classList.add('alt');
+  }catch(e){btn.textContent='⬇ Save offline';alert('Could not save this video. Check your internet connection (and the CORS setting in firebase-rules.txt).');}
+  btn.disabled=false;
+}
+
+/* library */
+let sess=null;
+async function loadLib(){
+  const lib=$('lib');lib.innerHTML='';
+  let all=[];
+  try{all=(await getDocs(collection(db,'videos'))).docs.map(d=>({id:d.id,...d.data()}));}
+  catch(e){lib.innerHTML='<div class="card"><span class="err">Could not load videos.</span> <a href="offline.html" style="color:var(--brand)">Watch videos saved on this phone</a></div>';return;}
+  const saved=await oids();
+  const own=sess.role==='owner';
+  const grades=own?GR:[sess.grade,...GR.filter(g=>g!==sess.grade)];
+  grades.forEach(g=>{
+    const d=document.createElement('details');d.open=own||g===sess.grade;
+    const list=all.filter(v=>v.grade===g).sort((a,b)=>b.date-a.date);
+    const s=document.createElement('summary');s.textContent='Grade '+g+' ('+list.length+')';d.append(s);
+    if(!list.length){const p=document.createElement('div');p.className='empty';p.textContent='No videos yet.';d.append(p);}
+    list.forEach(v=>{
+      const w=document.createElement('div');w.className='vid';
+      const h=document.createElement('h4');h.textContent=v.title;
+      const m=document.createElement('div');m.className='meta';m.textContent=v.subject+' • '+(v.size/1048576).toFixed(1)+' MB • '+new Date(v.date).toLocaleDateString();
+      const r=document.createElement('div');r.className='row';
+      const pl=document.createElement('button');pl.className='btn sm';pl.textContent='▶ Watch';
+      pl.onclick=()=>{let el=w.querySelector('video');if(el){el.remove();pl.textContent='▶ Watch';return;}
+        el=document.createElement('video');el.controls=true;el.src=v.url;el.autoplay=true;w.append(el);pl.textContent='✕ Close';};
+      const dl=document.createElement('button');dl.className='btn alt sm';dl.textContent='⬇ Download file';
+      dl.onclick=async()=>{dl.disabled=true;dl.textContent='Downloading…';
+        try{const b=await (await fetch(v.url)).blob(),u=URL.createObjectURL(b),a=document.createElement('a');
+          a.href=u;a.download=v.name||'video.mp4';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);}
+        catch(e){window.open(v.url,'_blank');}
+        dl.disabled=false;dl.textContent='⬇ Download file';};
+      const so=document.createElement('button');so.className='btn sm'+(saved.has(v.id)?' alt':'');so.textContent=saved.has(v.id)?'✓ Saved offline':'⬇ Save offline';
+      so.onclick=async()=>{if(so.textContent.startsWith('✓')){if(confirm('Remove this video from your phone?')){await odel(v.id);so.textContent='⬇ Save offline';so.classList.remove('alt');}return;}saveOffline(v,so);};
+      r.append(pl,so,dl);
+      if(own){const x=document.createElement('button');x.className='btn del sm';x.textContent='🗑 Delete';
+        x.onclick=async()=>{if(!confirm('Delete "'+v.title+'"? This cannot be undone.'))return;
+          try{await deleteObject(ref(st,v.path)).catch(()=>{});await deleteDoc(doc(db,'videos',v.id));loadLib();}
+          catch(e){alert('Could not delete.');}};r.append(x);}
+      w.append(h,m,r);d.append(w);
+    });
+    lib.append(d);
+  });
+}
+
+function render(s){
+  sess=s;
+  const on=!!s,ownerOk=s?.role==='owner'&&s.verified;
+  $('auth').classList.toggle('hide',on);
+  $('verify').classList.toggle('hide',!(s?.role==='owner'&&!s.verified));
+  $('lib').classList.toggle('hide',!(on&&(s.role==='student'||ownerOk)));
+  $('upload').classList.toggle('hide',!ownerOk);
+  $('outBtn').classList.toggle('hide',!on);
+  $('who').textContent=on?(s.role==='owner'?'Owner: '+s.email:s.name+' • Grade '+s.grade):'';
+  if(!on)showTab('login');
+  else if(s.role==='student'||ownerOk)loadLib();
+}
+</script>
+</body>
+</html>

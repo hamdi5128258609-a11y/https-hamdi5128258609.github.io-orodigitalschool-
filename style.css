@@ -1,0 +1,24 @@
+*{box-sizing:border-box}
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#172033;background:#eef3fb}
+body{margin:0;min-height:100vh;padding:18px}
+.shell{max-width:760px;margin:0 auto;background:#fff;min-height:80vh;padding:clamp(18px,4vw,32px);border-radius:20px;box-shadow:0 10px 35px #14284a16}
+h1,h2,h3{color:#123b70;overflow-wrap:anywhere}
+button,.chip{border:0;border-radius:10px;padding:12px 16px;margin:5px 4px 5px 0;background:#1458a6;color:#fff;font-weight:650;cursor:pointer;font-size:15px}
+button:active{transform:scale(.98)}
+button.ghost{background:#e8eef7;color:#123b70}
+button.danger{background:#b42318}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
+label{display:block;font-weight:600;margin:12px 0}
+input:not([type=checkbox]):not([type=file]){display:block;width:100%;padding:12px;margin-top:7px;border:1px solid #c8d3e3;border-radius:9px;font:inherit}
+input[type=file]{display:block;max-width:100%;margin:12px 0}
+.card{padding:16px;margin:12px 0;border:1px solid #dce4f0;border-radius:14px;overflow-wrap:anywhere}
+.logo{max-width:150px;max-height:150px;object-fit:contain}
+.prev,.doc{display:block;max-width:100%;max-height:360px;object-fit:contain;margin:12px 0}
+video{display:block;width:100%;max-height:60vh;margin:12px 0;background:#000}
+.muted{color:#65738a}
+.err{color:#b42318}
+.chip{background:#e8eef7;color:#123b70}
+.chip.on{background:#1458a6;color:#fff}
+a{color:#1458a6}
+#toast:not([hidden]){position:sticky;bottom:12px;padding:12px 16px;border-radius:10px;background:#172033;color:#fff;margin-top:16px}
+progress{width:100%;height:18px}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oro Digital School - Offline Videos</title>
+<style>
+:root{--bg:#f7faf7;--card:#fff;--text:#18261c;--muted:#5b6b5f;--brand:#1b7f3b;--border:#dbe5dc;--err:#c0392b}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1a13;--card:#16241b;--text:#e8f1ea;--muted:#9bb0a0;--brand:#3cc267;--border:#27382c;--err:#ff7b6b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+header{background:var(--card);border-bottom:1px solid var(--border)}
+.wrap{max-width:900px;margin:0 auto;padding:0 14px}
+nav{display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{font-weight:800;color:var(--brand)}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:6px 11px;font-size:.85rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.alt{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+.btn.del{background:var(--err)}
+details{background:var(--card);border:1px solid var(--border);border-radius:14px;margin:12px 0;padding:4px 14px}
+summary{font-weight:700;font-size:1.05rem;padding:10px 0;cursor:pointer;color:var(--brand)}
+.vid{border-top:1px solid var(--border);padding:12px 0}
+.vid h4{margin:0 0 2px}
+.meta{color:var(--muted);font-size:.82rem;margin-bottom:8px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+video{width:100%;max-height:60vh;border-radius:8px;background:#000;margin-top:8px}
+.empty{color:var(--muted);padding:8px 0 12px}
+</style>
+</head>
+<body>
+<header><div class="wrap"><nav><span class="logo">📚 Oro Digital School</span><a class="btn alt" href="index.html">← Back to site</a></nav></div></header>
+<main class="wrap">
+<h3>Videos saved on this phone</h3>
+<p class="meta">These videos play without internet. Save more from the main site while you are online.</p>
+<div id="lib"></div>
+</main>
+<script>
+const $=id=>document.getElementById(id);let urls=[];
+function open_(){return new Promise((res,rej)=>{const r=indexedDB.open('ods_offline',1);r.onupgradeneeded=()=>r.result.createObjectStore('videos',{keyPath:'id'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+async function all(){const db=await open_();return new Promise((res,rej)=>{const q=db.transaction('videos').objectStore('videos').getAll();q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);});}
+async function del(id){const db=await open_();return new Promise((res,rej)=>{const t=db.transaction('videos','readwrite');t.objectStore('videos').delete(id);t.oncomplete=res;t.onerror=()=>rej(t.error);});}
+async function load(){
+  urls.forEach(u=>URL.revokeObjectURL(u));urls=[];
+  const lib=$('lib');lib.innerHTML='';
+  let list=[];try{list=await all();}catch(e){lib.innerHTML='<p class="empty">Could not read saved videos on this device.</p>';return;}
+  ['9','10','11','12'].forEach(g=>{
+    const items=list.filter(v=>v.grade===g).sort((a,b)=>b.date-a.date);
+    if(!items.length)return;
+    const d=document.createElement('details');d.open=true;
+    const s=document.createElement('summary');s.textContent='Grade '+g+' ('+items.length+')';d.append(s);
+    items.forEach(v=>{
+      const w=document.createElement('div');w.className='vid';
+      const h=document.createElement('h4');h.textContent=v.title;
+      const m=document.createElement('div');m.className='meta';m.textContent=v.subject+' • '+(v.blob.size/1048576).toFixed(1)+' MB';
+      const r=document.createElement('div');r.className='row';
+      const pl=document.createElement('button');pl.className='btn';pl.textContent='▶ Watch';
+      pl.onclick=()=>{let el=w.querySelector('video');if(el){el.remove();pl.textContent='▶ Watch';return;}
+        const u=URL.createObjectURL(v.blob);urls.push(u);el=document.createElement('video');el.controls=true;el.src=u;el.autoplay=true;w.append(el);pl.textContent='✕ Close';};
+      const x=document.createElement('button');x.className='btn del';x.textContent='🗑 Remove from phone';
+      x.onclick=async()=>{if(!confirm('Remove "'+v.title+'" from this phone?'))return;await del(v.id);load();};
+      r.append(pl,x);w.append(h,m,r);d.append(w);lib.append(d);
+    });
+  });
+  if(!lib.children.length)lib.innerHTML='<p class="empty">No videos saved yet. Open the main site, log in and tap “Save offline” on a video.</p>';
+}
+load();
+</script>
+</body>
+</html>
