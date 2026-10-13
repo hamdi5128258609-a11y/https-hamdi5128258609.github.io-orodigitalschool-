@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oro Digital School</title>
+<style>
+:root{--bg:#f7faf7;--card:#fff;--text:#18261c;--muted:#5b6b5f;--brand:#1b7f3b;--border:#dbe5dc;--err:#c0392b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a13;--card:#16241b;--text:#e8f1ea;--muted:#9bb0a0;--brand:#3cc267;--border:#27382c;--err:#ff7b6b}}
+:root[data-theme="dark"]{--bg:#0f1a13;--card:#16241b;--text:#e8f1ea;--muted:#9bb0a0;--brand:#3cc267;--border:#27382c;--err:#ff7b6b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--card);border-bottom:1px solid var(--border);z-index:5}
+.wrap{max-width:900px;margin:0 auto;padding:0 14px}
+nav{display:flex;align-items:center;justify-content:space-between;height:56px;gap:8px}
+.logo{font-weight:800;color:var(--brand)}
+.hide{display:none!important}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin:14px 0}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:10px 16px;font-size:.95rem;font-weight:600;cursor:pointer}
+.btn.alt{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+.btn.del{background:var(--err);color:#fff}
+.btn.sm{padding:6px 11px;font-size:.85rem}
+.tabs{display:flex;gap:6px;margin-bottom:8px}
+.tabs button{flex:1}
+label{display:block;font-weight:600;margin:10px 0 4px;font-size:.9rem}
+input,select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:1rem}
+.err{color:var(--err);font-size:.82rem;min-height:1em}
+.msg{margin-top:10px;padding:10px;border-radius:8px;font-weight:600;display:none}
+.msg.ok{display:block;background:rgba(27,127,59,.15);color:var(--brand)}
+.msg.bad{display:block;background:rgba(192,57,43,.15);color:var(--err)}
+.ov{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:22px 12px;text-align:center;color:var(--muted);cursor:pointer;margin-top:4px}
+.drop.over{border-color:var(--brand);color:var(--brand)}
+.drop b{color:var(--text);display:block;word-break:break-all}
+details{background:var(--card);border:1px solid var(--border);border-radius:14px;margin:12px 0;padding:4px 14px}
+summary{font-weight:700;font-size:1.05rem;padding:10px 0;cursor:pointer;color:var(--brand)}
+.vid{border-top:1px solid var(--border);padding:12px 0}
+.vid h4{margin:0 0 2px}
+.meta{color:var(--muted);font-size:.82rem;margin-bottom:8px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+video{width:100%;max-height:60vh;border-radius:8px;background:#000;margin-top:8px}
+.empty{color:var(--muted);padding:8px 0 12px;font-size:.9rem}
+</style>
+</head>
+<body>
+<header><div class="wrap"><nav>
+<span class="logo">📚 Oro Digital School</span>
+<span><span id="who" class="meta" style="margin-right:8px"></span><button id="outBtn" class="btn alt sm hide">Log out</button></span>
+</nav></div></header>
+
+<main class="wrap">
+<section id="auth" class="card">
+<div class="tabs">
+<button class="btn" data-tab="login">Student Login</button>
+<button class="btn alt" data-tab="register">Register</button>
+<button class="btn alt" data-tab="owner">Owner</button>
+</div>
+
+<form id="login" data-pane novalidate>
+<label for="lp">Phone Number</label><input id="lp" type="tel" placeholder="09XXXXXXXX" autocomplete="tel">
+<label for="lw">Password</label><input id="lw" type="password" autocomplete="current-password">
+<button class="btn" style="margin-top:12px;width:100%">Log In</button><div class="msg"></div>
+</form>
+
+<form id="register" data-pane class="hide" novalidate>
+<label for="rn">Full Name</label><input id="rn" autocomplete="name"><div class="err" data-f="rn"></div>
+<label for="rp">Phone Number</label><input id="rp" type="tel" placeholder="09XXXXXXXX"><div class="err" data-f="rp"></div>
+<label for="rg">Grade</label><select id="rg"><option value="">Select grade</option><option>9</option><option>10</option><option>11</option><option>12</option></select><div class="err" data-f="rg"></div>
+<label for="rw">Password</label><input id="rw" type="password" autocomplete="new-password" placeholder="At least 6 characters"><div class="err" data-f="rw"></div>
+<label for="rw2">Confirm Password</label><input id="rw2" type="password" autocomplete="new-password"><div class="err" data-f="rw2"></div>
+<button class="btn" style="margin-top:12px;width:100%">Create Student Account</button><div class="msg"></div>
+</form>
+
+<!-- Owner: one-time setup -->
+<form id="ownerSetup" data-pane class="hide" novalidate>
+<p class="meta"><b>One-time owner setup.</b> The first account created here becomes the one and only owner. This cannot be repeated.</p>
+<label for="oe">Owner Email</label><input id="oe" type="email" autocomplete="email"><div class="err" data-f="oe"></div>
+<label for="op">Password</label><input id="op" type="password" autocomplete="new-password" placeholder="At least 8 characters"><div class="err" data-f="op"></div>
+<label for="op2">Confirm Password</label><input id="op2" type="password" autocomplete="new-password"><div class="err" data-f="op2"></div>
+<button class="btn" style="margin-top:12px;width:100%">Create Owner Account</button><div class="msg"></div>
+</form>
+
+<!-- Owner: login -->
+<form id="ownerLogin" data-pane class="hide" novalidate>
+<label for="le">Owner Email</label><input id="le" type="email" autocomplete="email">
+<label for="lpw">Password</label><input id="lpw" type="password" autocomplete="current-password">
+<button class="btn" style="margin-top:12px;width:100%">Owner Log In</button><div class="msg"></div>
+</form>
+</section>
+
+<section id="upload" class="card hide">
+<h3 style="margin-top:0">Upload Video (Owner only)</h3>
+<form id="upForm" novalidate>
+<div class="row"><div style="flex:1;min-width:120px"><label for="ug">Grade</label><select id="ug"><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
+<div style="flex:2;min-width:160px"><label for="us">Subject</label><select id="us"><option>English</option><option>Physics</option><option>Chemistry</option><option>Mathematics</option></select></div></div>
+<label for="ut">Video Title</label><input id="ut">
+<label>Video File</label>
+<div class="drop" id="drop" style="position:relative"><span id="dropTxt">📁 Tap here to choose a video from your phone (gallery or files)</span><input id="uf" type="file" accept="video/*" class="ov"></div>
+<div class="btn alt sm" style="position:relative;display:inline-block;margin-top:8px;overflow:hidden">🎥 Record with camera<input id="uc" type="file" accept="video/*" capture="environment" class="ov"></div>
+<p class="meta" style="margin:8px 0 0">Keep this page open until the upload finishes.</p>
+<button class="btn" style="margin-top:12px">Upload Video</button><div class="msg" id="upMsg"></div>
+</form>
+</section>
+
+<section id="lib" class="hide"></section>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const GR=['9','10','11','12'];
+let db=null,session=null,urls=[],picked=null;
+
+/* storage */
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open('ods',1);
+r.onupgradeneeded=()=>{const d=r.result;d.createObjectStore('users',{keyPath:'phone'});d.createObjectStore('videos',{keyPath:'id',autoIncrement:true});};
+r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+const tx=(s,m,fn)=>new Promise((res,rej)=>{const t=db.transaction(s,m),q=fn(t.objectStore(s));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error);});
+async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
+const getOwner=()=>{try{return JSON.parse(localStorage.getItem('ods_owner'))}catch(e){return null}};
+const setOwner=o=>{try{localStorage.setItem('ods_owner',JSON.stringify(o));return true}catch(e){return false}};
+const getSess=()=>{try{return JSON.parse(sessionStorage.getItem('ods_s'))}catch(e){return null}};
+const setSess=s=>{try{s?sessionStorage.setItem('ods_s',JSON.stringify(s)):sessionStorage.removeItem('ods_s')}catch(e){}};
+
+/* helpers */
+function say(form,t,ok){const m=form.querySelector('.msg');m.className='msg '+(ok?'ok':'bad');m.textContent=t;}
+function ferr(k,t){document.querySelector('[data-f="'+k+'"]').textContent=t||'';}
+const mail=e=>/^\S+@\S+\.\S+$/.test(e);
+function showTab(t){
+  document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('alt',x.dataset.tab!==t));
+  const pane=t==='owner'?(getOwner()?'ownerLogin':'ownerSetup'):t;
+  document.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hide',p.id!==pane));
+}
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+
+/* student register */
+$('register').onsubmit=async e=>{e.preventDefault();
+  const v={n:$('rn').value.trim(),p:$('rp').value.trim().replace(/^\+251/,'0'),g:$('rg').value,w:$('rw').value,w2:$('rw2').value};
+  let ok=true;const c=(k,bad,t)=>{ferr(k,bad?t:'');if(bad)ok=false;};
+  c('rn',v.n.length<3,'Enter your full name.');
+  c('rp',!/^09\d{8}$/.test(v.p),'Enter a valid phone number (09XXXXXXXX).');
+  c('rg',!v.g,'Select your grade.');
+  c('rw',v.w.length<6,'Password must be at least 6 characters.');
+  c('rw2',v.w!==v.w2,'Passwords do not match.');
+  if(!ok)return;
+  try{
+    if(await tx('users','readonly',s=>s.get(v.p))){ferr('rp','This phone number is already registered.');return;}
+    const h=await sha(v.w);
+    await tx('users','readwrite',s=>s.put({phone:v.p,name:v.n,grade:v.g,pw:h,date:Date.now()}));
+  }catch(err){say(e.target,'Could not save your account.',false);return;}
+  say(e.target,'Registration successful! You can now log in.',true);e.target.reset();
+};
+
+/* student login */
+$('login').onsubmit=async e=>{e.preventDefault();
+  const p=$('lp').value.trim().replace(/^\+251/,'0');
+  try{
+    const u=await tx('users','readonly',s=>s.get(p));
+    if(!u||u.pw!==await sha($('lw').value)){say(e.target,'Incorrect phone number or password.',false);return;}
+    start({role:'student',name:u.name,grade:u.grade});
+  }catch(err){say(e.target,'Something went wrong. Try again.',false);}
+};
+
+/* owner: one-time setup (only works when no owner exists) */
+$('ownerSetup').onsubmit=async e=>{e.preventDefault();
+  if(getOwner()){showTab('owner');return;}
+  const em=$('oe').value.trim().toLowerCase(),pw=$('op').value;
+  let ok=true;const c=(k,bad,t)=>{ferr(k,bad?t:'');if(bad)ok=false;};
+  c('oe',!mail(em),'Enter a valid email address.');
+  c('op',pw.length<8,'Password must be at least 8 characters.');
+  c('op2',pw!==$('op2').value,'Passwords do not match.');
+  if(!ok)return;
+  if(!setOwner({email:em,pw:await sha(pw)})){say(e.target,'Could not save the owner account.',false);return;}
+  e.target.reset();start({role:'owner',name:em});
+};
+
+/* owner login */
+$('ownerLogin').onsubmit=async e=>{e.preventDefault();
+  const o=getOwner(),em=$('le').value.trim().toLowerCase();
+  if(!o||o.email!==em||o.pw!==await sha($('lpw').value)){say(e.target,'Incorrect owner email or password.',false);return;}
+  e.target.reset();start({role:'owner',name:o.email});
+};
+
+function start(s){session=s;setSess(s);render();}
+$('outBtn').onclick=()=>{session=null;setSess(null);render();};
+
+/* video file picker + drag and drop */
+const drop=$('drop');
+function pick(f){
+  if(!f)return;
+  if(f.type&&!f.type.startsWith('video/')&&!/\.(mp4|webm|mov|mkv|3gp|avi|m4v)$/i.test(f.name)){say($('upForm'),'Please choose a video file.',false);return;}
+  picked=f;
+  $('dropTxt').innerHTML='<b>'+f.name.replace(/[<>&]/g,'')+'</b>'+(f.size/1048576).toFixed(1)+' MB selected';
+  if(!$('ut').value.trim())$('ut').value=f.name.replace(/\.[^.]+$/,'');
+  $('upMsg').className='msg';
+}
+['change','input'].forEach(n=>{$('uf').addEventListener(n,()=>pick($('uf').files[0]));$('uc').addEventListener(n,()=>pick($('uc').files[0]));});
+['dragenter','dragover'].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.add('over');}));
+['dragleave','drop'].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.remove('over');}));
+drop.addEventListener('drop',e=>pick(e.dataTransfer.files[0]));
+
+/* upload (owner only) */
+$('upForm').onsubmit=async e=>{e.preventDefault();
+  if(session?.role!=='owner')return;
+  const t=$('ut').value.trim();
+  if(!t||!picked){say(e.target,'Enter a title and choose a video file.',false);return;}
+  try{
+    say(e.target,'Uploading… please wait.',true);
+    await tx('videos','readwrite',s=>s.add({grade:$('ug').value,subject:$('us').value,title:t,blob:picked,type:picked.type||'video/mp4',size:picked.size,name:picked.name,date:Date.now()}));
+    say(e.target,'Video uploaded to Grade '+$('ug').value+'.',true);
+    $('ut').value='';$('uf').value='';$('uc').value='';picked=null;
+    $('dropTxt').innerHTML='📁 Tap here to choose a video from your phone (gallery or files)';
+    loadLib();
+  }catch(err){say(e.target,'Upload failed. Your device may be out of storage.',false);}
+};
+
+/* library */
+async function loadLib(){
+  urls.forEach(u=>URL.revokeObjectURL(u));urls=[];
+  const all=await tx('videos','readonly',s=>s.getAll())||[];
+  const lib=$('lib');lib.innerHTML='';
+  const own=session.role==='owner';
+  const grades=own?GR:[session.grade,...GR.filter(g=>g!==session.grade)];
+  grades.forEach(g=>{
+    const d=document.createElement('details');d.open=own||g===session.grade;
+    const list=all.filter(v=>v.grade===g).sort((a,b)=>b.date-a.date);
+    const s=document.createElement('summary');s.textContent='Grade '+g+' ('+list.length+')';d.append(s);
+    if(!list.length){const p=document.createElement('div');p.className='empty';p.textContent='No videos yet.';d.append(p);}
+    list.forEach(v=>{
+      const w=document.createElement('div');w.className='vid';
+      const h=document.createElement('h4');h.textContent=v.title;
+      const m=document.createElement('div');m.className='meta';m.textContent=v.subject+' • '+(v.size/1048576).toFixed(1)+' MB • '+new Date(v.date).toLocaleDateString();
+      const r=document.createElement('div');r.className='row';
+      const pl=document.createElement('button');pl.className='btn sm';pl.textContent='▶ Watch';
+      pl.onclick=()=>{let el=w.querySelector('video');if(el){el.remove();pl.textContent='▶ Watch';return;}
+        const u=URL.createObjectURL(v.blob);urls.push(u);el=document.createElement('video');el.controls=true;el.src=u;el.autoplay=true;w.append(el);pl.textContent='✕ Close';};
+      const dl=document.createElement('button');dl.className='btn alt sm';dl.textContent='⬇ Download';
+      dl.onclick=()=>{const u=URL.createObjectURL(v.blob),a=document.createElement('a');a.href=u;
+        a.download=v.name||((v.title.replace(/[^\w\- ]+/g,'')||'video')+'.mp4');
+        document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);};
+      r.append(pl,dl);
+      if(own){const x=document.createElement('button');x.className='btn del sm';x.textContent='🗑 Delete';
+        x.onclick=async()=>{if(!confirm('Delete "'+v.title+'"? This cannot be undone.'))return;await tx('videos','readwrite',s=>s.delete(v.id));loadLib();};r.append(x);}
+      w.append(h,m,r);d.append(w);
+    });
+    lib.append(d);
+  });
+}
+
+function render(){
+  const on=!!session;
+  $('auth').classList.toggle('hide',on);
+  $('lib').classList.toggle('hide',!on);
+  $('upload').classList.toggle('hide',session?.role!=='owner');
+  $('outBtn').classList.toggle('hide',!on);
+  $('who').textContent=on?(session.role==='owner'?'Owner: '+session.name:session.name+' • Grade '+session.grade):'';
+  if(!on)showTab('login');
+  else loadLib().catch(()=>{});
+}
+
+(async()=>{try{db=await openDB();}catch(e){document.body.insertAdjacentHTML('afterbegin','<p class="wrap err">This browser does not support video storage.</p>');return;}
+  session=getSess();render();})();
+</script>
+</body>
+</html>
